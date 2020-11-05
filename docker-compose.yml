@@ -1,9 +1,29 @@
-version: '3'
+version: '2'
+services:
+    # Database
+    database:
+        image: mysql:5.6
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment:
+            - "MYSQL_DATABASE=homestead"
+            - "MYSQL_USER=homestead"
+            - "MYSQL_PASSWORD=secret"
+            - "MYSQL_ROOT_PASSWORD=secret"
+        ports:
+            - "3306:3306"
 
-services: 
-    mysql_database:
-        image: "mysql:latest"
-        environment: 
-            - MYSQL_ROOT_PASSWORD="password"
-    web_test:
-        image: "nginx:latest"
+    #Start phpmyadmin instance connected to db
+    phpmyadmin:
+        depends_on:
+            - database
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - '8080:80'
+        environment:
+            PMA_HOST: database
+            PMA_USER: homestead
+            PMA_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: secret
+volumes:
+    dbdata:
